@@ -132,7 +132,7 @@
           }
         },
         {
-          "match": "\\b(var|let|alias) \\s*([[:alpha:]_]\\w*)\\b",
+          "match": "\\b(var|let|alias|comptime) \\s*([[:alpha:]_]\\w*)\\b",
           "captures": {
             "1": {
               "name": "storage.modifier.declaration.python"
