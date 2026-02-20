@@ -20,10 +20,10 @@ comptime assert x > 0
 comptime a, b = func()
 # <- storage.modifier.declaration.python
 #        ^ variable.other.python
-# TODO       ^ variable.other.python
+#           ^ variable.other.python
 
 # comptime tuple destructuring (parenthesized)
 comptime (a, b) = func()
-# TODO <- storage.modifier.declaration.python
-# TODO     ^ variable.other.python
-# TODO        ^ variable.other.python
+# <- storage.modifier.declaration.python
+#         ^ variable.other.python
+#            ^ variable.other.python

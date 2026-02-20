@@ -143,15 +143,32 @@
           }
         },
         {
-          "match": "\\b(var|let|alias|comptime) \\s*([[:alpha:]_]\\w*)\\b",
-          "captures": {
+          "comment": "Variable declarations: var/let/alias/comptime followed by one or more names,\nincluding tuple destructuring like 'comptime a, b = ...' or 'comptime (a, b) = ...'.\n",
+          "begin": "\\b(var|let|alias|comptime)\\s+(?=[[:alpha:]_(])",
+          "beginCaptures": {
             "1": {
               "name": "storage.modifier.declaration.python"
-            },
-            "2": {
-              "name": "variable.other.python"
             }
-          }
+          },
+          "end": "(?=[=:\\n#])",
+          "patterns": [
+            {
+              "name": "variable.other.python",
+              "match": "\\b([[:alpha:]_]\\w*)\\b"
+            },
+            {
+              "name": "punctuation.separator.comma.python",
+              "match": ","
+            },
+            {
+              "name": "punctuation.parenthesis.begin.python",
+              "match": "\\("
+            },
+            {
+              "name": "punctuation.parenthesis.end.python",
+              "match": "\\)"
+            }
+          ]
         }
       ]
     },
@@ -1684,7 +1701,7 @@
       ]
     },
     "illegal-names": {
-      "match": "(?x)\n  \\b(?:\n    (\n      and | assert | async | await | break | class | struct | trait | continue | del | elif | else | except | finally | for | from | global\n      | if | in | is | (?<=\\.)lambda | lambda(?=\\s*[\\.=])\n      | nonlocal | not | or | pass | raise | return | try | while | with\n      | yield\n    ) | (def | fn | capturing | raises) | (\n      as | import\n    )\n  )\\b\n",
+      "match": "(?x)\n  \\b(?:\n    (\n      and | assert | async | await | break | class | struct | trait | continue | del | elif | else | except | finally | for | from | global\n      | if | in | is | (?<=\\.)lambda | lambda(?=\\s*[\\.=])\n      | nonlocal | not | or | pass | raise | return | try | while | with\n      | yield\n    ) | (def | fn | capturing | raises | comptime) | (\n      as | import\n    )\n  )\\b\n",
       "captures": {
         "1": {
           "name": "keyword.control.flow.python"
