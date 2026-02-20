@@ -3,6 +3,22 @@
 This repository contains a TextMate grammar for the Mojo 🔥 programming
 language.
 
+## Testing
+
+Grammar tests use [vscode-tmgrammar-test](https://github.com/PanAeon/vscode-tmgrammar-test).
+Test files live in `tests/` and use inline scope assertions.
+
+```bash
+npm install
+npm test
+```
+
+To run a single test file:
+
+```bash
+npx vscode-tmgrammar-test -g syntaxes/mojo.syntax.json 'tests/baseline.mojo'
+```
+
 ## Contributing
 
 The Mojo syntax has been converted from [VS Code's Python syntax][1], which

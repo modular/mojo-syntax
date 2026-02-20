@@ -1,0 +1,24 @@
+{
+  "name": "mojo-syntax",
+  "version": "1.0.0",
+  "description": "This repository contains a TextMate grammar for the Mojo 🔥 programming language.",
+  "main": "index.js",
+  "scripts": {
+    "test": "vscode-tmgrammar-test -g syntaxes/mojo.syntax.json 'tests/*.mojo'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/modular/mojo-syntax.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/modular/mojo-syntax/issues"
+  },
+  "homepage": "https://github.com/modular/mojo-syntax#readme",
+  "devDependencies": {
+    "vscode-tmgrammar-test": "^0.1.3"
+  }
+}
