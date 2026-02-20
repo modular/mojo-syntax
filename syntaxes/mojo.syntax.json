@@ -132,6 +132,17 @@
           }
         },
         {
+          "match": "\\b(comptime)\\s+(if|for|assert)\\b",
+          "captures": {
+            "1": {
+              "name": "storage.modifier.declaration.python"
+            },
+            "2": {
+              "name": "keyword.control.flow.python"
+            }
+          }
+        },
+        {
           "match": "\\b(var|let|alias|comptime) \\s*([[:alpha:]_]\\w*)\\b",
           "captures": {
             "1": {
@@ -1092,11 +1103,14 @@
       ]
     },
     "generator": {
-      "comment": "Match \"for ... in\" construct used in generators and for loops to\ncorrectly identify the \"in\" as a control flow keyword.\n",
-      "begin": "\\bfor\\b",
+      "comment": "Match \"for ... in\" construct used in generators and for loops to\ncorrectly identify the \"in\" as a control flow keyword.\nCapture 0 = entire match (e.g. \"for\" or \"comptime for\"), capture 1 = optional \"comptime\" prefix.\nWhen \"comptime\" is absent, capture 1 is empty and its scope is not applied.\n",
+      "begin": "(?:\\b(comptime)\\s+)?\\bfor\\b",
       "beginCaptures": {
         "0": {
           "name": "keyword.control.flow.python"
+        },
+        "1": {
+          "name": "storage.modifier.declaration.python"
         }
       },
       "end": "\\bin\\b",
