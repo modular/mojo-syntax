@@ -23,6 +23,16 @@
     "statement": {
       "patterns": [
         {
+          "comment": "REPL Magic hide command",
+          "name": "comment.line.mojo",
+          "match": "^\\s*\\%\\#"
+        },
+        {
+          "comment": "REPL Magic commands",
+          "name": "entity.name.function.decorator.python",
+          "match": "^\\%[a-zA-Z0-9_]+"
+        },
+        {
           "include": "#import"
         },
         {
@@ -113,7 +123,7 @@
         },
         {
           "name": "keyword.control.flow.python",
-          "match": "(?x)\n  \\b(?<!\\.)(\n    async | continue | del | assert | break | finally | for\n    | from | elif | else | if | except | pass | raise\n    | return | try | while | with\n  )\\b\n"
+          "match": "(?x)\n  \\b(?<!\\.)(\n    async | continue | del | __disable_del | assert | break | finally | for\n    | from | elif | else | if | except | pass | raise\n    | return | try | while | with\n  )\\b\n"
         },
         {
           "name": "storage.modifier.declaration.python",
@@ -132,43 +142,15 @@
           }
         },
         {
-          "match": "\\b(comptime)\\s+(if|for|assert)\\b",
+          "match": "\\b(var|let|alias|comptime) \\s*([[:alpha:]_]\\w*)\\b",
           "captures": {
             "1": {
               "name": "storage.modifier.declaration.python"
             },
             "2": {
-              "name": "keyword.control.flow.python"
+              "name": "variable.other.python"
             }
           }
-        },
-        {
-          "comment": "Variable declarations: var/let/alias/comptime followed by one or more names,\nincluding tuple destructuring like 'comptime a, b = ...' or 'comptime (a, b) = ...'.\n",
-          "begin": "\\b(var|let|alias|comptime)\\s+(?=[[:alpha:]_(])",
-          "beginCaptures": {
-            "1": {
-              "name": "storage.modifier.declaration.python"
-            }
-          },
-          "end": "(?=[=:\\n#])",
-          "patterns": [
-            {
-              "name": "variable.other.python",
-              "match": "\\b([[:alpha:]_]\\w*)\\b"
-            },
-            {
-              "name": "punctuation.separator.comma.python",
-              "match": ","
-            },
-            {
-              "name": "punctuation.parenthesis.begin.python",
-              "match": "\\("
-            },
-            {
-              "name": "punctuation.parenthesis.end.python",
-              "match": "\\)"
-            }
-          ]
         }
       ]
     },
@@ -1043,7 +1025,7 @@
           "patterns": [
             {
               "name": "storage.modifier",
-              "match": "\\b(owned|borrowed|inout)\\b"
+              "match": "\\b(var|read|mut|out|ref)\\b"
             },
             {
               "name": "keyword.operator.positional.parameter.python",
@@ -1120,14 +1102,11 @@
       ]
     },
     "generator": {
-      "comment": "Match \"for ... in\" construct used in generators and for loops to\ncorrectly identify the \"in\" as a control flow keyword.\nCapture 0 = entire match (e.g. \"for\" or \"comptime for\"), capture 1 = optional \"comptime\" prefix.\nWhen \"comptime\" is absent, capture 1 is empty and its scope is not applied.\n",
-      "begin": "(?:\\b(comptime)\\s+)?\\bfor\\b",
+      "comment": "Match \"for ... in\" construct used in generators and for loops to\ncorrectly identify the \"in\" as a control flow keyword.\n",
+      "begin": "\\bfor\\b",
       "beginCaptures": {
         "0": {
           "name": "keyword.control.flow.python"
-        },
-        "1": {
-          "name": "storage.modifier.declaration.python"
         }
       },
       "end": "\\bin\\b",
@@ -1196,7 +1175,7 @@
     },
     "function-modifier": {
       "name": "storage.modifier",
-      "match": "(raises|capturing)"
+      "match": "\\b(raises|capturing)\\b"
     },
     "parameters": {
       "name": "meta.function.parameters.python",
@@ -1215,7 +1194,7 @@
       "patterns": [
         {
           "name": "storage.modifier",
-          "match": "\\b(owned|borrowed|inout)\\b"
+          "match": "\\b(var|read|mut|out|ref)\\b"
         },
         {
           "name": "keyword.operator.positional.parameter.python",
@@ -1670,11 +1649,11 @@
     },
     "builtin-types": {
       "name": "support.type.python",
-      "match": "(?x)\n  (?<!\\.) \\b(\n    __mlir_attr | __mlir_op | __mlir_type | bool | bytearray | bytes | classmethod | complex | dict\n    | float | frozenset | int | list | object | property\n    | set | slice | staticmethod | str | tuple | type\n\n    (?# Although 'super' is not a type, it's related to types,\n        and is special enough to be highlighted differently from\n        other built-ins)\n    | super\n  )\\b\n"
+      "match": "(?x)\n  (?<!\\.) \\b(\n    __mlir_attr | __mlir_op | __mlir_type | bool | bytearray | bytes | classmethod | complex | dict\n    | float | frozenset | int | SIMD | list | object | property\n    | set | slice | staticmethod | always_inline | capturing | parameter | throws | escaping | str | tuple | type\n\n    (?# Although 'super' is not a type, it's related to types,\n        and is special enough to be highlighted differently from\n        other built-ins)\n    | super\n  )\\b\n"
     },
     "magic-function-names": {
       "comment": "these methods have magic interpretation by python and are generally called\nindirectly through syntactic constructs\n",
-      "match": "(?x)\n  \\b(\n    __(?:\n      abs | add | aenter | aexit | aiter | and | anext\n      | await | bool | call | ceil | class_getitem\n      | cmp | coerce | complex | contains | copy\n      | deepcopy | del | delattr | delete | delitem\n      | delslice | dir | div | divmod | enter | eq\n      | exit | float | floor | floordiv | format | ge\n      | get | getattr | getattribute | getinitargs\n      | getitem | getnewargs | getslice | getstate | gt\n      | hash | hex | iadd | iand | idiv | ifloordiv |\n      | ilshift | imod | imul | index | init\n      | instancecheck | int | invert | ior | ipow\n      | irshift | isub | iter | itruediv | ixor | le\n      | len | long | lshift | lt | missing | mod | mul\n      | ne | neg | new | next | nonzero | oct | or | pos\n      | pow | radd | rand | rdiv | rdivmod | reduce\n      | reduce_ex | repr | reversed | rfloordiv |\n      | rlshift | rmod | rmul | ror | round | rpow\n      | rrshift | rshift | rsub | rtruediv | rxor | set\n      | setattr | setitem | set_name | setslice\n      | setstate | sizeof | str | sub | subclasscheck\n      | truediv | trunc | unicode | xor | matmul\n      | rmatmul | imatmul | init_subclass | set_name\n      | fspath | bytes | prepare | length_hint\n    )__\n  )\\b\n",
+      "match": "(?x)\n  \\b(\n    __(?:\n      abs | add | aenter | aexit | aiter | and | anext\n      | await | bool | call | ceil | class_getitem\n      | cmp | coerce | complex | contains | copy\n      | deepcopy | del | __disable_del | delattr | delete | delitem\n      | delslice | dir | div | divmod | enter | eq\n      | exit | float | floor | floordiv | format | ge\n      | get | getattr | getattribute | getinitargs\n      | getitem | getnewargs | getslice | getstate | gt\n      | hash | hex | iadd | iand | idiv | ifloordiv |\n      | ilshift | imod | imul | index | init\n      | instancecheck | int | invert | ior | ipow\n      | irshift | isub | iter | itruediv | ixor | le\n      | len | long | lshift | lt | missing | mod | mul\n      | ne | neg | new | next | nonzero | oct | or | pos\n      | pow | radd | rand | rdiv | rdivmod | reduce\n      | reduce_ex | repr | reversed | rfloordiv |\n      | rlshift | rmod | rmul | ror | round | rpow\n      | rrshift | rshift | rsub | rtruediv | rxor | set\n      | setattr | setitem | set_name | setslice\n      | setstate | sizeof | str | sub | subclasscheck\n      | truediv | trunc | unicode | xor | matmul\n      | rmatmul | imatmul | init_subclass | set_name\n      | fspath | bytes | prepare | length_hint\n    )__\n  )\\b\n",
       "captures": {
         "1": {
           "name": "support.function.magic.python"
@@ -1701,7 +1680,7 @@
       ]
     },
     "illegal-names": {
-      "match": "(?x)\n  \\b(?:\n    (\n      and | assert | async | await | break | class | struct | trait | continue | del | elif | else | except | finally | for | from | global\n      | if | in | is | (?<=\\.)lambda | lambda(?=\\s*[\\.=])\n      | nonlocal | not | or | pass | raise | return | try | while | with\n      | yield\n    ) | (def | fn | capturing | raises | comptime) | (\n      as | import\n    )\n  )\\b\n",
+      "match": "(?x)\n  \\b(?:\n    (\n      and | assert | async | await | break | class | struct | trait | continue | del | __disable_del | elif | else | except | finally | for | from | global\n      | if | in | is | (?<=\\.)lambda | lambda(?=\\s*[\\.=])\n      | nonlocal | not | or | pass | raise | return | try | while | with\n      | yield\n    ) | (def | fn | capturing | raises) | (\n      as | import\n    )\n  )\\b\n",
       "captures": {
         "1": {
           "name": "keyword.control.flow.python"
@@ -1903,7 +1882,7 @@
         }
       ]
     },
-    "regexp-charecter-set-escapes": {
+    "regexp-character-set-escapes": {
       "patterns": [
         {
           "name": "constant.character.escape.regexp",
@@ -2053,7 +2032,7 @@
           },
           "patterns": [
             {
-              "include": "#regexp-charecter-set-escapes"
+              "include": "#regexp-character-set-escapes"
             },
             {
               "name": "constant.character.set.regexp",
@@ -2357,7 +2336,7 @@
           },
           "patterns": [
             {
-              "include": "#regexp-charecter-set-escapes"
+              "include": "#regexp-character-set-escapes"
             },
             {
               "name": "constant.character.set.regexp",
@@ -2682,7 +2661,7 @@
           },
           "patterns": [
             {
-              "include": "#regexp-charecter-set-escapes"
+              "include": "#regexp-character-set-escapes"
             },
             {
               "name": "constant.character.set.regexp",
@@ -2986,7 +2965,7 @@
           },
           "patterns": [
             {
-              "include": "#regexp-charecter-set-escapes"
+              "include": "#regexp-character-set-escapes"
             },
             {
               "name": "constant.character.set.regexp",
